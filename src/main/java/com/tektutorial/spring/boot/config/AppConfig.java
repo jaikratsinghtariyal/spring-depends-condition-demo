@@ -10,6 +10,7 @@ import org.springframework.boot.system.JavaVersion;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 @Configuration
 public class AppConfig {
@@ -26,10 +27,15 @@ public class AppConfig {
 
     @Bean
     @ConditionalOnExpression(
-            "${module.emp.enabled} and ${module.submodule.enabled:true}"
+            "${module.emp.enabled} and ${module.address.enabled:true}"
     )
-    @ConditionalOnBean(Address.class)
     public Employee getEmployee(){
+        return new Employee();
+    }
+
+    @Bean
+    @ConditionalOnBean(Address.class)
+    public Employee getEmployeeWithAddress(){
         return new Employee();
     }
 
@@ -67,7 +73,7 @@ public class AppConfig {
 
     @Bean
     @ConditionalOnJndi(
-            value = "java:comp/env/foo"
+            value = "java:comp/env/datasource"
     )
     public JNDIClass getJNDIClass(){
         return new JNDIClass();
@@ -107,7 +113,7 @@ public class AppConfig {
         return new CloudApplicationBean();
     }
 
-    @Bean
+    @Bean("CustomCondition")
     @Conditional(CustomCondition.class)
     public CustomConditionBean getCustomConditionBean(){
         return new CustomConditionBean();
@@ -115,7 +121,15 @@ public class AppConfig {
 
     @Bean
     @ConditionalApp
+    //@Conditional(AppNestedCondition.class)
     public NestedConditionBean getNestedConditionBean(){
         return new NestedConditionBean();
     }
+
+    @Bean
+    @DependsOn("CustomCondition")
+    public DependsOnBean getDependsOnBean(){
+        return new DependsOnBean();
+    }
+
 }

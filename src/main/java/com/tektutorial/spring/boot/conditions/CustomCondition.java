@@ -14,5 +14,4 @@ public class CustomCondition implements Condition {
         ConditionBean conditionBean = (ConditionBean) context.getBeanFactory().getBean("ConditionBean");
         return conditionBean != null;
     }
-
 }
